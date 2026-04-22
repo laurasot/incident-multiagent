@@ -1,0 +1,255 @@
+---
+alwaysApply: true
+---
+
+# AWS CDK + Python Development Rules
+
+Expert AWS CDK (TypeScript) + Python developer. Focus on secure, scalable, cost-effective cloud infrastructure and clean Python code.
+
+## Core Rules
+
+- **Code in English**, comments and documentation in Spanish when needed
+- Use descriptive names: `userTable`, `processImageFunction`, `uploadBucket`
+- Follow AWS naming conventions and resource tagging
+- Never hardcode values, use environment variables and parameters
+- Implement least privilege principle for all IAM policies
+- Always use CDK constructs over raw CloudFormation when available
+- **Never create .md files or documentation** unless explicitly requested
+
+## CDK Documentation & Standards
+
+**Official Documentation Sources** (Always prioritize these):
+- Official AWS CDK v2 Guide: https://docs.aws.amazon.com/cdk/v2/guide/home.html
+- AWS CDK Examples in TypeScript: https://github.com/aws-samples/aws-cdk-examples/tree/main/typescript
+- Construct Hub (AWS and third-party constructs): https://constructs.dev/
+
+**CDK Version Requirements**:
+- Use only **CDK v2** with `aws-cdk-lib` package
+- Never use CDK v1 imports or syntax (`@aws-cdk/*`)
+- Code examples must be in **TypeScript** unless another language is explicitly requested
+
+## CDK Architecture & Structure
+
+**Project Structure**:
+```
+lib/
+├── construct/          # Reusable constructs
+│   ├── [service]/     # Service-specific stacks
+│   └── shared/        # Shared utilities
+├── stack/             # Stack definitions
+└── main-stack.ts      # Main stack orchestration
+```
+
+**Best Practices**:
+- Use L3 constructs when possible, L2 when needed, avoid L1
+- Create reusable constructs for common patterns
+- Separate concerns: one stack per service/domain
+- Use CDK aspects for cross-cutting concerns
+- Implement proper dependency management between stacks
+
+## AWS Services Best Practices
+
+**Lambda Functions**:
+- Use layers for shared dependencies
+- Set appropriate memory/timeout based on workload
+- Enable X-Ray tracing for observability
+- Use environment variables for configuration
+- Implement proper error handling and retries
+- Use ARM64 architecture for cost optimization
+
+**DynamoDB**:
+- Use single-table design when appropriate
+- Implement proper GSI/LSI strategy
+- Enable point-in-time recovery for production
+- Use on-demand billing for unpredictable workloads
+- Implement proper partition key distribution
+
+**S3**:
+- Enable versioning and lifecycle policies
+- Use appropriate storage classes
+- Implement CORS policies correctly
+- Enable server-side encryption
+- Use presigned URLs for secure uploads
+
+**API Gateway**:
+- Implement proper request/response validation
+- Use API keys and usage plans for rate limiting
+- Enable CloudWatch logging and metrics
+- Implement CORS headers correctly
+- Use custom authorizers when needed
+
+## Python Best Practices
+
+**Code Structure**:
+```
+src/
+├── lambda/
+│   ├── [function-name]/
+│   │   └── index.py    # Lambda handler
+├── layer/
+│   └── python-common/
+│       └── python/
+│           └── common/ # Shared utilities
+```
+
+**Coding Standards**:
+- Follow PEP 8 style guide
+- Use type hints for all functions
+- Implement proper error handling with try/except
+- Use dataclasses or Pydantic for data models
+- Never use `print()`, use proper logging
+- Validate all inputs and sanitize outputs
+
+**Lambda Function Structure**:
+```python
+import json
+import logging
+from typing import Dict, Any
+from common.response import success_response, error_response
+from common.logger import get_logger
+
+logger = get_logger(__name__)
+
+def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
+    try:
+        # Validate input
+        # Process request
+        # Return response
+        return success_response(data)
+    except Exception as e:
+        logger.error(f"Error processing request: {str(e)}")
+        return error_response("Internal server error")
+```
+
+## Security & Compliance
+
+**IAM Policies**:
+- Follow least privilege principle
+- Use resource-specific ARNs, avoid wildcards
+- Implement condition keys for additional security
+- Regular audit of permissions
+- Use IAM roles, never embed credentials
+
+**Data Protection**:
+- Encrypt data at rest and in transit
+- Use AWS KMS for key management
+- Implement proper CORS policies
+- Validate and sanitize all inputs
+- Use VPC endpoints for private communication
+
+## Environment Management
+
+**Configuration**:
+- Use CDK context for environment-specific values
+- Implement proper environment separation (dev/staging/prod)
+- Use AWS Systems Manager Parameter Store for secrets
+- Never commit sensitive data to version control
+- Use CDK environment variables for runtime configuration
+
+**Deployment**:
+- Use CDK pipelines for CI/CD
+- Implement proper testing stages
+- Use feature flags for gradual rollouts
+- Implement rollback strategies
+- Monitor deployment metrics
+
+## Monitoring & Observability
+
+**CloudWatch**:
+- Set up proper alarms for all critical metrics
+- Use custom metrics for business logic
+- Implement log aggregation and analysis
+- Set up dashboards for operational visibility
+- Use CloudWatch Insights for log analysis
+
+**X-Ray Tracing**:
+- Enable tracing for all Lambda functions
+- Use subsegments for detailed tracing
+- Implement custom annotations and metadata
+- Monitor service maps and performance
+
+## Cost Optimization
+
+**Resource Sizing**:
+- Right-size Lambda memory allocation
+- Use reserved capacity for predictable workloads
+- Implement lifecycle policies for S3
+- Use appropriate DynamoDB capacity modes
+- Monitor and optimize unused resources
+
+**Architecture Patterns**:
+- Use event-driven architectures
+- Implement caching strategies
+- Use CDN for static content
+- Optimize data transfer costs
+- Regular cost reviews and optimization
+
+## Testing & Quality
+
+**Unit Testing**:
+- Test Lambda functions with mocked AWS services
+- Use pytest for Python testing
+- Implement proper test coverage (>80%)
+- Test error scenarios and edge cases
+- Use CDK assertions for infrastructure testing
+
+**Integration Testing**:
+- Test complete workflows end-to-end
+- Use AWS SAM for local testing
+- Implement proper test data management
+- Test security policies and permissions
+
+## Error Handling & Resilience
+
+**Lambda Functions**:
+- Implement proper exception handling
+- Use dead letter queues for failed messages
+- Implement exponential backoff for retries
+- Log errors with proper context
+- Use circuit breaker patterns when appropriate
+
+**Infrastructure**:
+- Implement multi-AZ deployments
+- Use auto-scaling for variable workloads
+- Implement health checks and monitoring
+- Plan for disaster recovery scenarios
+
+## Quality Standards
+
+- Zero CDK synthesis warnings/errors
+- All Python code must pass linting (flake8, black)
+- Proper type hints for all functions
+- Comprehensive error handling
+- Security best practices implemented
+- Cost optimization considerations
+- Proper documentation and comments
+
+## Checklist
+
+**CDK Infrastructure:**
+- [ ] Use appropriate construct levels
+- [ ] Implement proper IAM policies
+- [ ] Enable monitoring and logging
+- [ ] Follow naming conventions
+- [ ] Implement proper tagging
+
+**Python Code:**
+- [ ] Type hints for all functions
+- [ ] Proper error handling
+- [ ] Input validation
+- [ ] Logging implementation
+- [ ] Follow PEP 8 standards
+
+**Security:**
+- [ ] Least privilege IAM policies
+- [ ] Data encryption enabled
+- [ ] Input validation implemented
+- [ ] No hardcoded secrets
+- [ ] CORS policies configured
+
+**Deployment:**
+- [ ] Pass all linting/tests
+- [ ] Environment variables configured
+- [ ] Monitoring alarms set up
+- [ ] Cost optimization reviewed
+- [ ] Security policies validated
