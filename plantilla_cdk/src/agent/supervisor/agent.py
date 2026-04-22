@@ -15,16 +15,14 @@ Responsibilities:
 """
 
 import json
-import logging
 import os
 from typing import Any, AsyncGenerator
 
 from strands import Agent
 from strands.models import BedrockModel
 
+from .. import logger
 from .system_prompt import SUPERVISOR_SYSTEM_PROMPT
-
-logger = logging.getLogger(__name__)
 
 
 class SupervisorAgent:
@@ -43,6 +41,11 @@ class SupervisorAgent:
         self.model = BedrockModel(
             model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
             region_name=os.environ.get("AWS_REGION", "us-west-2"),
+        )
+        logger.debug(
+            "Supervisor BedrockModel region=%s model_id=%s",
+            os.environ.get("AWS_REGION", "us-west-2"),
+            os.environ.get("MODEL_ID", "us.anthropic.claude-sonnet-4-20250514-v1:0"),
         )
 
         self.agent = Agent(

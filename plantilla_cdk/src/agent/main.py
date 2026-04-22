@@ -1,32 +1,5 @@
-"""
-Multi-Agent Incident Response System - AgentCore Runtime Entry Point
+from . import app, logger
 
-Uses BedrockAgentCoreApp pattern (same as host_adk_agent in the original project).
-Protocol: HTTP (supervisor receives requests directly from frontend).
-Sub-agents (monitoring, websearch) run as Strands agent-as-tool inside the same process.
-
-Workload identity token is managed automatically by AgentCore Runtime:
-- Runtime injects it into BedrockAgentCoreContext before calling @app.entrypoint
-- @requires_access_token in gateway_client.py reads it from there transparently
-- We never read it from request headers manually
-"""
-
-import logging
-import os
-import sys
-
-from bedrock_agentcore import BedrockAgentCoreApp
-
-logging.basicConfig(
-    level=os.getenv("LOG_LEVEL", "INFO"),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    stream=sys.stdout,
-)
-logger = logging.getLogger(__name__)
-
-app = BedrockAgentCoreApp()
-
-# Lazy-initialized on first invocation (cold-start)
 _supervisor = None
 
 
@@ -38,10 +11,10 @@ def _build_supervisor():
     create_gateway_client() will pick it up automatically.
     """
     import boto3
-    from common.gateway_client import create_gateway_client
-    from monitoring.agent import MonitoringAgent
-    from supervisor.agent import SupervisorAgent
-    from websearch.agent import WebSearchAgent
+    from .common.gateway_client import create_gateway_client
+    from .monitoring.agent import MonitoringAgent
+    from .supervisor.agent import SupervisorAgent
+    from .websearch.agent import WebSearchAgent
 
     logger.info("Initializing gateway MCP client...")
     gateway_client = create_gateway_client()

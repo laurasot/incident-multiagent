@@ -16,7 +16,6 @@ Required env vars (all set by CDK agentcore/index.ts):
 
 import base64
 import json
-import logging
 import os
 from datetime import timedelta
 
@@ -25,7 +24,7 @@ import urllib3
 from mcp.client.streamable_http import streamablehttp_client
 from strands.tools.mcp.mcp_client import MCPClient
 
-logger = logging.getLogger(__name__)
+from .. import logger
 
 _cognito_client = boto3.client("cognito-idp")
 _ssm_client = boto3.client("ssm")
