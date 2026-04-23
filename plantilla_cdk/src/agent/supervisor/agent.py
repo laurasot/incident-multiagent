@@ -1,4 +1,3 @@
-import json
 import os
 from typing import Any, AsyncGenerator
 
@@ -57,10 +56,7 @@ class SupervisorAgent:
             async for event in self.agent.stream_async(user_message):
                 if event.get("type") == "tool_use":
                     tool_name = event.get("name", "")
-                    tool_input = event.get("input", {})
-
-                    logger.info(f"Supervisor delega a: {tool_name.upper()}")
-                    logger.info(f"Input enviado: {json.dumps(tool_input, indent=2, ensure_ascii=False)}")
+                    logger.info(f"Supervisor delegating to: {tool_name}")
                     
                     if tool_name == "monitoringAgent":
                         yield {"actions": {"transfer_to_agent": "monitoringAgent"}}
@@ -69,10 +65,7 @@ class SupervisorAgent:
                 
                 elif event.get("type") == "tool_result":
                     tool_name = event.get("name", "")
-                    tool_result = event.get("result", {})
-                    
-                    logger.info(f"{tool_name.upper()} devuelve a Supervisor: {json.dumps(tool_result, indent=2, ensure_ascii=False)}")
-                    logger.info(f"Resultado recibido: {json.dumps(tool_result, indent=2, ensure_ascii=False)}")
+                    logger.info(f"Received result from: {tool_name}")
 
                 yield event
 
