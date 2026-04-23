@@ -19,9 +19,16 @@ class SupervisorAgent:
 
     def __init__(
         self,
-        monitoring_agent: Agent,
-        websearch_agent: Agent,
+        monitoring_tool,
+        websearch_tool,
     ):
+        """
+        Initialize Supervisor Agent with tool-wrapped sub-agents.
+        
+        Args:
+            monitoring_tool: Tool function (decorated with @tool) for monitoring tasks
+            websearch_tool: Tool function (decorated with @tool) for web search tasks
+        """
         self.model = BedrockModel(
             model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
             region_name=os.environ.get("AWS_REGION", "us-west-2"),
@@ -31,7 +38,7 @@ class SupervisorAgent:
             name="supervisorAgent",
             model=self.model,
             system_prompt=SUPERVISOR_SYSTEM_PROMPT,
-            tools=[monitoring_agent, websearch_agent],
+            tools=[monitoring_tool, websearch_tool],
         )
 
     async def invoke_stream(
