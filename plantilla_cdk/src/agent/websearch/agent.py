@@ -1,21 +1,3 @@
-"""
-Web Search Agent - Solution Research Specialist
-
-Role: Specialized agent for web search and solution research
-Framework: Strands (Amazon Bedrock)
-Model: Claude Haiku 3.5 (fast, cost-effective)
-State: STATELESS (no memory, context provided by supervisor)
-
-Responsibilities:
-- Search Tavily API for AWS documentation and solutions
-- Find relevant Stack Overflow discussions
-- Locate AWS best practices and guides
-- Return structured research findings to supervisor
-
-Tools:
-- web_search_tavily (direct API integration)
-"""
-
 import os
 from strands import Agent
 from strands.models import BedrockModel
@@ -38,11 +20,10 @@ class WebSearchAgent:
             tavily_api_key: Tavily API key for web search
         """
         self.model = BedrockModel(
-            model_id="anthropic.claude-3-5-haiku-20241022-v1:0",
+            model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
             region_name=os.environ.get("AWS_REGION", "us-west-2"),
         )
         
-        # Create Tavily web search tool
         web_search_tool = create_web_search_tool(tavily_api_key)
         
         self.agent = Agent(

@@ -1,23 +1,3 @@
-"""
-Monitoring Agent - CloudWatch Logs Specialist
-
-Role: Specialized agent for AWS CloudWatch Logs investigation
-Framework: Strands (Amazon Bedrock)
-Model: Claude Haiku 3.5 (fast, cost-effective)
-State: STATELESS (no memory, context provided by supervisor)
-
-Responsibilities:
-- Query CloudWatch logs via AgentCore Gateway (MCP protocol)
-- Filter log events based on patterns and time ranges
-- Analyze error patterns and anomalies
-- Return structured log analysis to supervisor
-
-Tools:
-- filter_log_events (via Gateway MCP)
-- get_log_events (via Gateway MCP)
-- describe_log_groups (via Gateway MCP)
-"""
-
 import os
 from typing import List, Any
 from strands import Agent
@@ -43,7 +23,7 @@ class MonitoringAgent:
                            (obtained via MCPClient.list_tools_sync() in main.py).
         """
         self.model = BedrockModel(
-            model_id="anthropic.claude-3-5-haiku-20241022-v1:0",
+            model_id="us.anthropic.claude-haiku-4-5-20251001-v1:0",
             region_name=os.environ.get("AWS_REGION", "us-west-2"),
         )
 

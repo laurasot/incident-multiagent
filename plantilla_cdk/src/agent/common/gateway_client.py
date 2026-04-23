@@ -1,19 +1,3 @@
-"""
-AgentCore Gateway MCP Client
-
-Creates MCP client for Gateway communication using direct Cognito M2M OAuth2.
-
-The client_secret is read live from Cognito via DescribeUserPoolClient instead of
-Secrets Manager, so it is always fresh regardless of CDK deploy order or Lambda
-Custom Resource failures.
-
-Required env vars (all set by CDK agentcore/index.ts):
-  USER_POOL_ID         - Cognito User Pool ID
-  GATEWAY_CLIENT_ID    - Cognito Gateway M2M client ID
-  COGNITO_DOMAIN_PREFIX - Cognito hosted-UI domain prefix
-  AWS_REGION           - AWS region
-"""
-
 import base64
 import json
 import os

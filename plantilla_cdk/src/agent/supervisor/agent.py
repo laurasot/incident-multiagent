@@ -1,19 +1,3 @@
-"""
-Supervisor Agent - Orchestrator for Incident Response System
-
-Role: Main orchestrator that coordinates incident investigation and resolution.
-Framework: Strands (Amazon Bedrock)
-Model: Claude Sonnet 4
-Protocol: HTTP via BedrockAgentCoreApp
-
-Responsibilities:
-- Analyze user incident reports
-- Delegate to monitoring agent (agent-as-tool) for CloudWatch investigation
-- Delegate to web search agent (agent-as-tool) for solution research
-- Synthesize findings and provide actionable recommendations
-- Emit transfer events for UI feedback
-"""
-
 import json
 import os
 from typing import Any, AsyncGenerator
@@ -42,11 +26,6 @@ class SupervisorAgent:
             model_id="us.anthropic.claude-sonnet-4-20250514-v1:0",
             region_name=os.environ.get("AWS_REGION", "us-west-2"),
         )
-        logger.debug(
-            "Supervisor BedrockModel region=%s model_id=%s",
-            os.environ.get("AWS_REGION", "us-west-2"),
-            os.environ.get("MODEL_ID", "us.anthropic.claude-sonnet-4-20250514-v1:0"),
-        )
 
         self.agent = Agent(
             name="supervisorAgent",
@@ -69,22 +48,29 @@ class SupervisorAgent:
         """
         try:
             async for event in self.agent.stream_async(user_message):
-                # Emit transfer event for UI feedback before yielding the chunk
                 if event.get("type") == "tool_use":
                     tool_name = event.get("name", "")
+                    tool_input = event.get("input", {})
+
+                    logger.info(f"Supervisor delega a: {tool_name.upper()}")
+                    logger.info(f"Input enviado: {json.dumps(tool_input, indent=2, ensure_ascii=False)}")
+                    
                     if tool_name == "monitoringAgent":
-                        yield {
-                            "actions": {"transfer_to_agent": "monitoringAgent"}
-                        }
+                        yield {"actions": {"transfer_to_agent": "monitoringAgent"}}
                     elif tool_name == "webSearchAgent":
-                        yield {
-                            "actions": {"transfer_to_agent": "webSearchAgent"}
-                        }
+                        yield {"actions": {"transfer_to_agent": "webSearchAgent"}}
+                
+                elif event.get("type") == "tool_result":
+                    tool_name = event.get("name", "")
+                    tool_result = event.get("result", {})
+                    
+                    logger.info(f"{tool_name.upper()} devuelve a Supervisor: {json.dumps(tool_result, indent=2, ensure_ascii=False)}")
+                    logger.info(f"Resultado recibido: {json.dumps(tool_result, indent=2, ensure_ascii=False)}")
 
                 yield event
 
         except Exception as exc:
-            logger.error("Supervisor invocation error: %s", exc, exc_info=True)
+            logger.error(f"Supervisor invocation error: {exc}", exc_info=True)
             yield {"type": "error", "error": str(exc), "agent": "supervisorAgent"}
 
     def get_agent(self) -> Agent:
