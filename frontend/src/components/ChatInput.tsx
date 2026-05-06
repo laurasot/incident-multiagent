@@ -12,7 +12,7 @@ interface ChatInputProps {
 export function ChatInput({
   onSend,
   disabled = false,
-  placeholder = "Ask host ADK questions!",
+  placeholder = "Listame los logs groups!",
 }: ChatInputProps) {
   const [input, setInput] = useState('');
 
