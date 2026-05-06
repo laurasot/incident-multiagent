@@ -1,0 +1,102 @@
+# Cursor IDE (local — not versioned)
+.cursor/
+
+# ══════════════════════════════════════════════════════════════════════
+# Monorepo: backend (CDK + Python) + frontend (Vite/React)
+# Patterns apply from repo root (ignore rules in subfolders: see note at bottom)
+# ══════════════════════════════════════════════════════════════════════
+
+# ────────────────────────────────────────────────────────────────────────
+# CDK / TypeScript (backend)
+# (No blanket *.js here — frontend ships *.config.js; backend tsc outDir is build/)
+# ────────────────────────────────────────────────────────────────────────
+node_modules/
+cdk.out/
+.cdk.staging/
+cdk.context.json
+
+# ────────────────────────────────────────────────────────────────────────
+# Python (backend agent / tooling)
+# ────────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+.venv
+
+# ────────────────────────────────────────────────────────────────────────
+# Environment and secrets
+# ────────────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+*.local
+
+# ────────────────────────────────────────────────────────────────────────
+# IDEs and OS
+# ────────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*.sw?
+*~
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ────────────────────────────────────────────────────────────────────────
+# Testing
+# ────────────────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ────────────────────────────────────────────────────────────────────────
+# Logs
+# ────────────────────────────────────────────────────────────────────────
+*.log
+logs/
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ────────────────────────────────────────────────────────────────────────
+# Frontend (Vite) build outputs
+# ────────────────────────────────────────────────────────────────────────
+dist-ssr/
+
+# ────────────────────────────────────────────────────────────────────────
+# AWS / Docker (backend)
+# ────────────────────────────────────────────────────────────────────────
+.aws-sam/
+docker-compose.override.yml
