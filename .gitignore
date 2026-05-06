@@ -49,6 +49,7 @@ env/
 .env
 .env.local
 .env.*.local
+!.env.example
 *.pem
 *.key
 secrets/
