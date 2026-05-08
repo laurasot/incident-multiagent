@@ -68,7 +68,7 @@ Prerequisites, environment variables, CDK deploy steps, and rough cost notes are
 
 ---
 
-## Request lifecycle (short)
+## Request lifecycle
 
 1. The frontend sends the prompt to the AgentCore **runtime ARN**.
 2. **AgentCore** starts or reuses the container and calls the entrypoint (`@app.entrypoint`).
