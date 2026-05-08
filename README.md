@@ -21,6 +21,8 @@ In practice: the user types in the chat → the **AgentCore runtime** runs `main
 
 ## Multi-agent architecture
 
+![Architecture diagram — AgentCore runtime, gateway (MCP), supervisor and specialist agents](assets/juanOps.drawio.png)
+
 ```mermaid
 flowchart TB
   subgraph users["Who uses the system"]
@@ -64,7 +66,6 @@ flowchart TB
 | `backend/` | **AWS CDK** (TypeScript), Docker image for the agent, Python Strands code and `BedrockAgentCoreApp`. |
 | `frontend/` | Chat UI against the AgentCore endpoint. |
 
-Prerequisites, environment variables, CDK deploy steps, and rough cost notes are in **[backend/README.md](backend/README.md)**.
 
 ---
 
@@ -84,4 +85,3 @@ Prerequisites, environment variables, CDK deploy steps, and rough cost notes are
 - **Strands Agents SDK** (agents, tools, streaming).
 - **AWS CDK v2** (`aws-cdk-lib`) for cloud resources.
 
-For deeper implementation notes and CDK constructs, see `backend/docs/IMPLEMENTATION.md`.
