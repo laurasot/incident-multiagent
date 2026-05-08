@@ -6,7 +6,7 @@ This repository demonstrates a clear **multi-agent** pattern: an orchestrator de
 
 ---
 
-## Core concepts (plain language)
+## Core concepts
 
 | Piece | Role |
 |--------|------|
