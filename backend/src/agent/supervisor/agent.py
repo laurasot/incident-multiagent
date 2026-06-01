@@ -41,6 +41,34 @@ class SupervisorAgent:
             tools=[monitoring_tool, websearch_tool],
         )
 
+    # Sub-agent tool names — used to detect delegation events
+    AGENT_TOOL_NAMES = {"monitoringAgent", "webSearchAgent"}
+
+    def _extract_tool_name(self, event: dict) -> str | None:
+        """
+        Extract tool name from a Strands/Bedrock streaming event.
+
+        Strands SDK may emit tool-use info in two formats:
+        1. Strands format:  {"type": "tool_use", "name": "<tool>", ...}
+        2. Bedrock format:  {"event": {"contentBlockStart": {"start": {"toolUse": {"name": "<tool>"}}}}}
+
+        Returns the tool name string or None if not a tool-use event.
+        """
+        # Strands native format
+        if event.get("type") == "tool_use":
+            return event.get("name") or None
+
+        # Bedrock nested format
+        inner = event.get("event")
+        if isinstance(inner, dict):
+            cbs = inner.get("contentBlockStart", {})
+            tool_use = cbs.get("start", {}).get("toolUse", {})
+            name = tool_use.get("name")
+            if name:
+                return name
+
+        return None
+
     async def invoke_stream(
         self,
         user_message: str,
@@ -52,21 +80,27 @@ class SupervisorAgent:
 
         Emits transfer events when delegating to sub-agents so the frontend
         can display visual feedback (e.g. "→ Checking CloudWatch logs...").
+        Handles both Strands-native and Bedrock-native event formats.
         """
+        emitted_transfers: set[str] = set()
+
         try:
             async for event in self.agent.stream_async(user_message):
-                if event.get("type") == "tool_use":
-                    tool_name = event.get("name", "")
-                    logger.info(f"Supervisor delegating to: {tool_name}")
-                    
-                    if tool_name == "monitoringAgent":
-                        yield {"actions": {"transfer_to_agent": "monitoringAgent"}}
-                    elif tool_name == "webSearchAgent":
-                        yield {"actions": {"transfer_to_agent": "webSearchAgent"}}
-                
+                tool_name = self._extract_tool_name(event)
+
+                if tool_name and tool_name in self.AGENT_TOOL_NAMES:
+                    # Emit transfer signal once per agent call (avoid duplicates
+                    # if both Strands and Bedrock formats arrive for the same tool)
+                    if tool_name not in emitted_transfers:
+                        emitted_transfers.add(tool_name)
+                        logger.info(f"Supervisor delegating to: {tool_name}")
+                        yield {"actions": {"transfer_to_agent": tool_name}}
+
                 elif event.get("type") == "tool_result":
-                    tool_name = event.get("name", "")
-                    logger.info(f"Received result from: {tool_name}")
+                    tool_name_result = event.get("name", "")
+                    logger.info(f"Received result from: {tool_name_result}")
+                    # Reset so the same agent can be called again later
+                    emitted_transfers.discard(tool_name_result)
 
                 yield event
 
