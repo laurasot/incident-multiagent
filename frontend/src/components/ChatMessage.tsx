@@ -39,27 +39,27 @@ export const ChatMessage = memo(function ChatMessage({
     >
       <div
         className={cn(
-          "flex gap-3 max-w-[85%] rounded-2xl px-4 py-3 shadow-sm",
+          "flex gap-3 max-w-[85%] rounded-2xl px-4 py-3",
           isUser
-            ? "bg-[#23272f] text-gray-200 border border-[#3a3f4b]"
+            ? "bg-[#1c1f2e] text-[#e2e5f0] border border-white/[0.07]"
             : cn(
-                "bg-[#0b2545] text-gray-200 border",
+                "bg-[#151820] text-[#e2e5f0] border",
                 isStreaming
-                  ? "border-[#4fc3f7] shadow-[0_0_10px_rgba(79,195,247,0.3)] animate-pulse-border"
-                  : "border-[#298dff]"
+                  ? "border-[#6b7af8]/40 shadow-[0_0_14px_rgba(107,122,248,0.12)] animate-pulse-border"
+                  : "border-white/[0.06]"
               )
         )}
       >
         <div className="flex-shrink-0 mt-1">
           {isUser ? (
-            <User className="w-5 h-5 text-gray-400" />
+            <User className="w-4 h-4 text-[#4d5570]" />
           ) : (
-            <Bot className="w-5 h-5 text-blue-400" />
+            <Bot className="w-4 h-4 text-[#6b7af8]" />
           )}
         </div>
 
         <div className="flex-1 min-w-0">
-          {/* Always render contentBlocks if available (for ordered display) */}
+          {/* contentBlocks (ordered display) */}
           {!isUser && message.contentBlocks && message.contentBlocks.length > 0 && (
             <div>
               {message.contentBlocks.map((block, index) => {
@@ -75,45 +75,42 @@ export const ChatMessage = memo(function ChatMessage({
                     >
                       <MarkdownRenderer content={block.content} />
                       {isStreaming && isLastBlock && (
-                        <span className="inline-block ml-1 text-[#4fc3f7] animate-cursor-blink">▋</span>
+                        <span className="inline-block ml-1 text-[#6b7af8] animate-cursor-blink">▋</span>
                       )}
                     </div>
                   );
                 } else if (block.type === 'tool') {
-                  // TODO: Tool blocks commented out for now
-                  // return (
-                  //   <div key={`tool-${block.toolBlock.toolUseId}`} className="mt-3">
-                  //     <ToolUseBlockComponent toolBlock={block.toolBlock} />
-                  //   </div>
-                  // );
                   return null;
                 } else if (block.type === 'transfer' && 'agentName' in block) {
                   const agentIcon = agentIcons[block.agentName];
                   const displayName = agentDisplayName[block.agentName] || block.agentName;
                   return (
-                    <div key={`transfer-${index}`} className="my-3 rounded-lg border border-[#298dff] bg-[#0d1f3c] shadow-[0_0_12px_rgba(41,141,255,0.25)] overflow-hidden">
+                    <div
+                      key={`transfer-${index}`}
+                      className="my-3 rounded-xl border border-white/[0.07] bg-[#1c1f2e] overflow-hidden animate-slide-in"
+                    >
                       {/* Transfer Header */}
-                      <div className="px-3 py-2 bg-[#102a4a] border-b border-[#1e3a5f] flex items-center gap-2">
+                      <div className="px-3 py-2 border-b border-white/[0.05] flex items-center gap-2">
                         {isStreaming ? (
                           <>
-                            <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                            <span className="text-sm font-medium text-blue-200">Transferring to agent...</span>
+                            <span className="w-1.5 h-1.5 bg-[#6b7af8] rounded-full animate-pulse" />
+                            <span className="text-xs font-medium text-[#7d87a0]">Transferring to agent...</span>
                           </>
                         ) : (
                           <>
-                            <Check className="w-4 h-4 text-green-400" />
-                            <span className="text-sm font-medium text-green-200">Transferred to agent</span>
+                            <Check className="w-3.5 h-3.5 text-[#56cfb2]" />
+                            <span className="text-xs font-medium text-[#56cfb2]">Transferred to agent</span>
                           </>
                         )}
                       </div>
                       {/* Agent Name with Icon */}
                       <div className="px-3 py-2 flex items-center gap-2">
                         {agentIcon && (
-                          <img src={agentIcon} alt={block.agentName} className="w-5 h-5 object-contain" />
+                          <img src={agentIcon} alt={block.agentName} className="w-4 h-4 object-contain opacity-80" />
                         )}
-                        <span className="text-sm font-semibold text-blue-300">{displayName}</span>
+                        <span className="text-sm font-medium text-[#c0c8db]">{displayName}</span>
                         {isStreaming && (
-                          <Loader2 className="w-4 h-4 text-blue-400 animate-spin ml-auto" />
+                          <Loader2 className="w-3.5 h-3.5 text-[#6b7af8] animate-spin ml-auto" />
                         )}
                       </div>
                     </div>
@@ -142,7 +139,7 @@ export const ChatMessage = memo(function ChatMessage({
               )}
 
               {isStreaming && (
-                <span className="inline-block ml-1 text-[#4fc3f7] animate-cursor-blink">▋</span>
+                <span className="inline-block ml-1 text-[#6b7af8] animate-cursor-blink">▋</span>
               )}
             </>
           )}
@@ -152,7 +149,7 @@ export const ChatMessage = memo(function ChatMessage({
             <div className="mt-3">
               <button
                 onClick={() => setShowMetadata(!showMetadata)}
-                className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-400 transition-colors"
+                className="flex items-center gap-1.5 text-xs text-[#3d4560] hover:text-[#7d87a0] transition-colors duration-150"
               >
                 {showMetadata ? (
                   <ChevronDown className="w-3 h-3" />
@@ -164,11 +161,11 @@ export const ChatMessage = memo(function ChatMessage({
               </button>
 
               {showMetadata && (
-                <div className="mt-2 p-3 bg-[#1a1d24] rounded-lg border border-[#3a3f4b] text-xs">
+                <div className="mt-2 p-3 bg-[#0f1119] rounded-lg border border-white/[0.05] text-xs animate-fade-in-up">
                   {message.metadata.usage && (
                     <div className="mb-2">
-                      <div className="font-medium text-gray-400 mb-1">Token Usage</div>
-                      <div className="text-gray-500 space-y-1">
+                      <div className="font-medium text-[#4d5570] mb-1">Token Usage</div>
+                      <div className="text-[#3d4560] space-y-0.5">
                         <div>Input: {message.metadata.usage.inputTokens}</div>
                         <div>Output: {message.metadata.usage.outputTokens}</div>
                         <div>Total: {message.metadata.usage.totalTokens}</div>
@@ -178,8 +175,8 @@ export const ChatMessage = memo(function ChatMessage({
 
                   {message.metadata.metrics && (
                     <div className="mb-2">
-                      <div className="font-medium text-gray-400 mb-1">Performance</div>
-                      <div className="text-gray-500">
+                      <div className="font-medium text-[#4d5570] mb-1">Performance</div>
+                      <div className="text-[#3d4560]">
                         {message.metadata.metrics.totalLatencyMs !== undefined && (
                           <div>Total Latency: {(message.metadata.metrics.totalLatencyMs / 1000).toFixed(2)}s</div>
                         )}
@@ -189,10 +186,10 @@ export const ChatMessage = memo(function ChatMessage({
 
                   {message.metadata.toolMetrics && Object.keys(message.metadata.toolMetrics).length > 0 && (
                     <div className="mb-2">
-                      <div className="font-medium text-gray-400 mb-1">Tool Metrics</div>
+                      <div className="font-medium text-[#4d5570] mb-1">Tool Metrics</div>
                       {Object.entries(message.metadata.toolMetrics).map(([toolName, metrics]) => (
-                        <div key={toolName} className="text-gray-500 mb-1">
-                          <div className="font-medium">{toolName}</div>
+                        <div key={toolName} className="text-[#3d4560] mb-1">
+                          <div className="font-medium text-[#4d5570]">{toolName}</div>
                           <div className="ml-2 space-y-0.5">
                             <div>Invocations: {metrics.invocations}</div>
                             <div>Avg Duration: {metrics.average_duration_seconds.toFixed(3)}s</div>
@@ -205,8 +202,8 @@ export const ChatMessage = memo(function ChatMessage({
 
                   {message.metadata.cycleDurations && message.metadata.cycleDurations.length > 0 && (
                     <div>
-                      <div className="font-medium text-gray-400 mb-1">Event Loop Cycles</div>
-                      <div className="text-gray-500">
+                      <div className="font-medium text-[#4d5570] mb-1">Event Loop Cycles</div>
+                      <div className="text-[#3d4560]">
                         Cycles: {message.metadata.cycleDurations.length}
                         <div className="ml-2">
                           {message.metadata.cycleDurations.map((duration, idx) => (
@@ -218,9 +215,9 @@ export const ChatMessage = memo(function ChatMessage({
                   )}
 
                   {message.metadata.stopReason && (
-                    <div className="mt-2 pt-2 border-t border-[#3a3f4b]">
-                      <div className="font-medium text-gray-400">Stop Reason</div>
-                      <div className="text-gray-500">{message.metadata.stopReason}</div>
+                    <div className="mt-2 pt-2 border-t border-white/[0.05]">
+                      <div className="font-medium text-[#4d5570]">Stop Reason</div>
+                      <div className="text-[#3d4560]">{message.metadata.stopReason}</div>
                     </div>
                   )}
                 </div>
@@ -228,10 +225,10 @@ export const ChatMessage = memo(function ChatMessage({
             </div>
           )}
 
-          {/* Elapsed time for simple responses */}
+          {/* Elapsed time */}
           {!isUser && message.elapsed !== undefined && !isStreaming && !message.metadata && (
-            <div className="mt-2 text-xs text-gray-500">
-              ⏱️ Response time: {formatElapsedTime(message.elapsed)}
+            <div className="mt-2 text-xs text-[#3d4560]">
+              ⏱ Response time: {formatElapsedTime(message.elapsed)}
             </div>
           )}
         </div>

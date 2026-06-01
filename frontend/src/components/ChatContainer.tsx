@@ -3,7 +3,7 @@ import { ChatMessage } from './ChatMessage'
 import { ChatInput } from './ChatInput'
 import { useChat } from '../hooks/useChat'
 import { fetchAuthSession } from 'aws-amplify/auth'
-import { Loader2, Activity } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 interface ChatContainerProps {
   user: any
@@ -65,8 +65,8 @@ export function ChatContainer({ user }: ChatContainerProps) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-400 mb-2">❌ {initializationError}</p>
-          <p className="text-gray-400 text-sm">Please check your CloudFormation stack configuration</p>
+          <p className="text-[#f06a6a] mb-2 text-sm">❌ {initializationError}</p>
+          <p className="text-[#4d5570] text-sm">Please check your CloudFormation stack configuration</p>
         </div>
       </div>
     );
@@ -76,8 +76,8 @@ export function ChatContainer({ user }: ChatContainerProps) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-2" />
-          <p className="text-gray-400">Initializing agent...</p>
+          <Loader2 className="w-6 h-6 text-[#6b7af8] animate-spin mx-auto mb-3" />
+          <p className="text-[#4d5570] text-sm">Initializing agent...</p>
         </div>
       </div>
     );
@@ -101,28 +101,12 @@ export function ChatContainer({ user }: ChatContainerProps) {
             )
           })}
 
-          {isStreaming && (activeAgent || messages[messages.length - 1]?.role === 'user') && (
-            <div className="flex justify-start">
-              <div className="bg-[#0b2545] text-gray-200 border border-[#298dff] rounded-2xl px-4 py-3 animate-thinking-pulse">
-                <div className="flex items-center gap-2">
-                  {activeAgent ? (
-                    <>
-                      <Activity className="w-4 h-4 text-blue-400 animate-pulse" />
-                      <span className="text-sm">
-                        {activeAgent === 'monitoringAgent'
-                          ? 'Transferring to 🔍 Monitoring Agent...'
-                          : activeAgent === 'webSearchAgent'
-                          ? 'Transferring to 🌐 Web Search Agent...'
-                          : `Transferring to ${activeAgent}...`}
-                      </span>
-                      <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
-                    </>
-                  ) : (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-sm">💭 Host Agent is thinking...</span>
-                    </>
-                  )}
+          {isStreaming && !activeAgent && messages[messages.length - 1]?.role === 'user' && (
+            <div className="flex justify-start animate-fade-in-up">
+              <div className="bg-[#161923] border border-[#6b7af8]/25 rounded-2xl px-4 py-3 animate-thinking-pulse shadow-[0_0_12px_rgba(107,122,248,0.08)]">
+                <div className="flex items-center gap-2.5">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#6b7af8]" />
+                  <span className="text-sm text-[#7d87a0]">Host Agent is thinking...</span>
                 </div>
               </div>
             </div>

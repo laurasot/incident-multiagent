@@ -32,9 +32,9 @@ export function ChatInput({
   };
 
   return (
-    <div className="border-t border-gray-700 bg-[#1a1e27] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.3)]">
+    <div className="border-t border-white/[0.06] bg-[#0f1119]">
       <div className="p-4">
-        <div className="max-w-4xl mx-auto flex gap-2">
+        <div className="max-w-4xl mx-auto flex gap-2 items-end">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -43,18 +43,24 @@ export function ChatInput({
             disabled={disabled}
             rows={1}
             className={cn(
-              "flex-1 bg-[#23272f] text-gray-200 border border-gray-600 rounded-lg px-4 py-3",
-              "placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-              "resize-none max-h-32 overflow-y-auto",
-              disabled && "opacity-50 cursor-not-allowed"
+              "flex-1 bg-[#161923] text-[#e2e5f0] border border-white/[0.07] rounded-xl px-4 py-3",
+              "placeholder:text-[#3d4560] focus:outline-none focus:ring-1 focus:ring-[#6b7af8]/50 focus:border-[#6b7af8]/40",
+              "resize-none max-h-32 overflow-y-auto text-sm leading-relaxed",
+              "transition-all duration-200",
+              disabled && "opacity-40 cursor-not-allowed"
             )}
           />
           <Button
             onClick={handleSend}
             disabled={disabled || !input.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className={cn(
+              "bg-[#6b7af8] hover:bg-[#7d8bfa] text-white px-4 py-3 rounded-xl",
+              "transition-all duration-200 shadow-[0_0_12px_rgba(107,122,248,0.25)]",
+              "hover:shadow-[0_0_18px_rgba(107,122,248,0.4)]",
+              "disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none"
+            )}
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4" />
           </Button>
         </div>
       </div>

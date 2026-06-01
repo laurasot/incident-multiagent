@@ -46,15 +46,15 @@ export function ChatPage({ signOut, user }: ChatPageProps) {
   }, [isResizing]);
 
   return (
-    <div className="h-screen bg-[#181c24] flex flex-col" style={{ userSelect: isResizing ? 'none' : 'auto' }}>
+    <div className="h-screen bg-[#0c0e16] flex flex-col" style={{ userSelect: isResizing ? 'none' : 'auto' }}>
       {/* Header - Fixed at top */}
-      <header className="flex-shrink-0 bg-[#1a1e27] border-b border-gray-700 px-6 py-4">
+      <header className="flex-shrink-0 bg-[#0f1119] border-b border-white/[0.06] px-6 py-4">
         <div className="flex items-center justify-center gap-3">
-          <h1 className="text-3xl font-bold text-gray-200">
+          <h1 className="text-2xl font-semibold tracking-tight text-[#e2e5f0]">
             Juanin, Analista de Incidentes
           </h1>
         </div>
-        <div className="h-px bg-gradient-to-r from-[#298dff] via-[#298dff] to-transparent mt-3 mx-auto max-w-2xl" />
+        <div className="h-px bg-gradient-to-r from-transparent via-[#6b7af8]/50 to-transparent mt-3 mx-auto max-w-xs" />
       </header>
 
       {/* Main Content - Takes remaining height */}
@@ -66,7 +66,7 @@ export function ChatPage({ signOut, user }: ChatPageProps) {
         {/* Resize Handle */}
         <div
           onMouseDown={startResizing}
-          className="w-1 bg-gray-700 hover:bg-blue-500 cursor-col-resize transition-colors flex-shrink-0"
+          className="w-px bg-white/[0.06] hover:bg-[#6b7af8]/50 cursor-col-resize transition-colors duration-200 flex-shrink-0"
         />
 
         <div className="flex-1 min-w-0 flex flex-col h-full">

@@ -20,16 +20,16 @@ export function Sidebar({ signOut }: SidebarProps) {
   };
 
   return (
-    <aside className="w-full h-full bg-[#1a1e27] flex flex-col flex-shrink-0">
-      <div className="p-4 border-b border-gray-700 flex-shrink-0">
-        <h2 className="text-lg font-semibold text-gray-200 mb-2">Session Info</h2>
+    <aside className="w-full h-full bg-[#0f1119] flex flex-col flex-shrink-0">
+      <div className="p-4 border-b border-white/[0.06] flex-shrink-0">
+        <h2 className="text-sm font-semibold text-[#7d87a0] uppercase tracking-widest">Session Info</h2>
       </div>
 
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto min-h-0">
+      <div className="flex-1 p-4 space-y-5 overflow-y-auto min-h-0">
         {/* Session ID */}
         <div>
-          <h3 className="text-sm font-medium text-gray-400 mb-2">Session ID</h3>
-          <div className="bg-[#23272f] border border-gray-600 rounded-lg p-3 text-xs text-gray-300 font-mono break-all">
+          <h3 className="text-xs font-medium text-[#4d5570] mb-2 uppercase tracking-wider">Session ID</h3>
+          <div className="bg-[#161923] border border-white/[0.05] rounded-lg p-3 text-xs text-[#7d87a0] font-mono break-all leading-relaxed">
             {sessionId}
           </div>
         </div>
@@ -37,41 +37,45 @@ export function Sidebar({ signOut }: SidebarProps) {
         {/* Agent Cards */}
         {agentCards && Object.keys(agentCards).length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-gray-400 mb-2">Sub-Agents</h3>
+            <h3 className="text-xs font-medium text-[#4d5570] mb-3 uppercase tracking-wider">Sub-Agents</h3>
             <div className="space-y-3">
               {Object.entries(agentCards).map(([agentName, agentInfo]) => {
                 const isActive = activeAgent === agentName;
                 return (
                   <div
                     key={agentName}
-                    className={`bg-[#23272f] rounded-lg p-3 transition-all duration-300 ${
+                    className={`rounded-xl p-3 transition-all duration-300 ${
                       isActive
-                        ? 'border-2 border-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]'
-                        : 'border border-green-500'
+                        ? 'bg-[#6b7af8]/10 border border-[#6b7af8]/40 shadow-[0_0_16px_rgba(107,122,248,0.12)]'
+                        : 'bg-[#161923] border border-white/[0.05]'
                     }`}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1.5">
                       {agentIcons[agentName] && (
-                        <img src={agentIcons[agentName]} alt={agentName} className="w-6 h-6 object-contain" />
+                        <img src={agentIcons[agentName]} alt={agentName} className="w-5 h-5 object-contain opacity-90" />
                       )}
-                      <div className="text-sm font-semibold text-gray-200">{agentDisplayName[agentName] || agentName}</div>
+                      <div className="text-sm font-medium text-[#e2e5f0]">
+                        {agentDisplayName[agentName] || agentName}
+                      </div>
                       {isActive && (
-                        <span className="ml-auto flex items-center gap-1 text-xs text-blue-400">
-                          <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                        <span className="ml-auto flex items-center gap-1.5 text-xs text-[#6b7af8]">
+                          <span className="w-1.5 h-1.5 bg-[#6b7af8] rounded-full animate-pulse" />
                           Active
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-gray-400 mb-2">{agentInfo.agent_card.description || 'No description'}</div>
-                    <div className="space-y-1">
+                    <div className="text-xs text-[#4d5570] mb-2 leading-relaxed">
+                      {agentInfo.agent_card.description || 'No description'}
+                    </div>
+                    <div className="space-y-0.5">
                       <div className="text-xs">
-                        <span className="text-gray-500">Name:</span>
-                        <span className="text-gray-300 ml-1">{agentInfo.agent_card.name}</span>
+                        <span className="text-[#3d4560]">Name:</span>
+                        <span className="text-[#7d87a0] ml-1">{agentInfo.agent_card.name}</span>
                       </div>
                       {agentInfo.agent_card.version && (
                         <div className="text-xs">
-                          <span className="text-gray-500">Version:</span>
-                          <span className="text-gray-300 ml-1">{agentInfo.agent_card.version}</span>
+                          <span className="text-[#3d4560]">Version:</span>
+                          <span className="text-[#7d87a0] ml-1">{agentInfo.agent_card.version}</span>
                         </div>
                       )}
                     </div>
@@ -84,17 +88,17 @@ export function Sidebar({ signOut }: SidebarProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex-shrink-0 p-6 border-t border-gray-700">
+      <div className="flex-shrink-0 p-4 border-t border-white/[0.06]">
         <div className="flex gap-2">
           <button
             onClick={() => window.location.reload()}
-            className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+            className="flex-1 px-3 py-2 bg-[#6b7af8]/15 hover:bg-[#6b7af8]/25 text-[#a5aeff] border border-[#6b7af8]/25 hover:border-[#6b7af8]/45 rounded-lg transition-all duration-200 text-sm font-medium"
           >
             New Session
           </button>
           <button
             onClick={signOut}
-            className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
+            className="flex-1 px-3 py-2 bg-white/[0.04] hover:bg-white/[0.07] text-[#7d87a0] hover:text-[#c0c8db] border border-white/[0.06] hover:border-white/[0.1] rounded-lg transition-all duration-200 text-sm font-medium"
           >
             Sign Out
           </button>

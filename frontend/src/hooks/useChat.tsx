@@ -158,12 +158,14 @@ export function ChatProvider({ children }: ChatProviderProps) {
             // Handle contentBlockStart events (tool invocation start)
             if ('contentBlockStart' in innerEvent) {
               const start = innerEvent.contentBlockStart?.start;
-              const contentBlockIndex = innerEvent.contentBlockStart?.contentBlockIndex ?? 0;
 
               if (start?.toolUse) {
                 const { toolUseId, name } = start.toolUse;
 
-                // Check if we already have this tool (avoid duplicates)
+                // Sub-agent tool names — when Bedrock format arrives without a prior
+                // actions.transfer_to_agent signal (fallback detection)
+                const AGENT_TOOL_NAMES = ['monitoringAgent', 'webSearchAgent'];
+
                 if (!toolBlocks.has(toolUseId)) {
                   // Finalize current text block if exists
                   if (currentTextBlock && currentTextBlock.content) {
@@ -171,20 +173,29 @@ export function ChatProvider({ children }: ChatProviderProps) {
                     currentTextBlock = null;
                   }
 
-                  const newToolBlock: ToolUseBlock = {
-                    toolUseId,
-                    name,
-                    input: {},
-                    status: 'loading',
-                  };
-                  toolBlocks.set(toolUseId, newToolBlock);
-
-                  // Add tool to sequential list
-                  orderedContent.push({
-                    type: 'tool',
-                    toolBlock: newToolBlock,
-                    toolUseId: toolUseId, // Store ID for later updates
-                  });
+                  if (AGENT_TOOL_NAMES.includes(name)) {
+                    // Treat sub-agent tool calls as transfer blocks (fallback)
+                    const alreadyTransferred = orderedContent.some(
+                      (item) => item.type === 'transfer' && item.agentName === name
+                    );
+                    if (!alreadyTransferred) {
+                      orderedContent.push({ type: 'transfer', agentName: name });
+                      setChatState((prev) => ({ ...prev, activeAgent: name }));
+                    }
+                  } else {
+                    const newToolBlock: ToolUseBlock = {
+                      toolUseId,
+                      name,
+                      input: {},
+                      status: 'loading',
+                    };
+                    toolBlocks.set(toolUseId, newToolBlock);
+                    orderedContent.push({
+                      type: 'tool',
+                      toolBlock: newToolBlock,
+                      toolUseId: toolUseId,
+                    });
+                  }
                 }
               }
             }
@@ -344,6 +355,8 @@ export function ChatProvider({ children }: ChatProviderProps) {
           // Handle Strands events: {type: "text", content: "..."}, {type: "tool_use", ...}, {type: "tool_result", ...}
           else if ('type' in event && typeof (event as any).type === 'string') {
             const eventType = (event as any).type as string;
+            const AGENT_TOOL_NAMES = ['monitoringAgent', 'webSearchAgent'];
+
             if (eventType === 'text') {
               const textContent = (event as any).content;
               if (textContent && typeof textContent === 'string') {
@@ -352,6 +365,22 @@ export function ChatProvider({ children }: ChatProviderProps) {
                   currentTextBlock = { type: 'text', content: '' };
                 }
                 currentTextBlock.content += textContent;
+              }
+            } else if (eventType === 'tool_use') {
+              // Strands-native tool_use event — fallback if backend didn't emit actions.transfer_to_agent
+              const toolName = (event as any).name as string;
+              if (toolName && AGENT_TOOL_NAMES.includes(toolName)) {
+                const alreadyTransferred = orderedContent.some(
+                  (item) => item.type === 'transfer' && item.agentName === toolName
+                );
+                if (!alreadyTransferred) {
+                  if (currentTextBlock && currentTextBlock.content) {
+                    orderedContent.push({ ...currentTextBlock });
+                    currentTextBlock = null;
+                  }
+                  orderedContent.push({ type: 'transfer', agentName: toolName });
+                  setChatState((prev) => ({ ...prev, activeAgent: toolName }));
+                }
               }
             } else if (eventType === 'tool_result') {
               const toolName = (event as any).name;
