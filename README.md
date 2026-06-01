@@ -4,7 +4,9 @@ An **AWS incident-response** assistant: an operations-oriented chat that combine
 
 This repository demonstrates a clear **multi-agent** pattern: an orchestrator delegates to specialists, deployed on **Amazon Bedrock AgentCore** and implemented with the **Strands Agents SDK** in Python.
 
-[▶ Ver demo](https://github.com/laurasot/incident-multiagent/blob/main/assets/demo_incident_multiagent.mp4)
+<p align="center">
+  <img src="assets/demo_incident_multiagent.gif" alt="Demo — incident multiagent assistant" width="800" />
+</p>
 
 ---
 
